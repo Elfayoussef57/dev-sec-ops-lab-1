@@ -10,8 +10,8 @@ import json
 import sys
 import os
 
-TARGET_FILE = "../session1/app_vulnerable.py"
-SECURE_FILE = "../session1/app_secure.py"
+TARGET_FILE = "../part1/app_vulnerable.py"
+SECURE_FILE = "../part1/app_secure.py"
 BANDIT_CONFIG = ".bandit.yaml"
 
 def run_bandit(filepath: str, label: str) -> dict:
@@ -22,7 +22,7 @@ def run_bandit(filepath: str, label: str) -> dict:
     print("="*60)
 
     result = subprocess.run(
-        ["bandit", "-r", filepath, "-f", "json", "-ll"],
+        [sys.executable, "-m", "bandit", "-r", filepath, "-f", "json", "-ll"],
         capture_output=True, text=True
     )
 
@@ -67,7 +67,7 @@ def run_safety_check():
     print("Running Safety dependency check...")
     print("="*60)
     result = subprocess.run(
-        ["safety", "check", "-r", "../session1/requirements.txt", "--json"],
+         [sys.executable, "-m", "safety", "check", "-r", "../requirements.txt", "--json"],
         capture_output=True, text=True
     )
     try:

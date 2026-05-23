@@ -1,0 +1,29 @@
+cat > .gitignore << 'EOF'
+# Virtual Environment
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables (never commit secrets!)
+.env
+*.env
+
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# pytest cache
+.pytest_cache/
+
+# Bandit/Safety reports
+EOF

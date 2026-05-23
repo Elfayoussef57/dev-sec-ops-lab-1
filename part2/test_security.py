@@ -11,8 +11,7 @@ import os
 # Add session1 to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../session1"))
 
-from app_secure import app, init_db
-
+from part1.app_secure import app, init_db
 
 @pytest.fixture
 def client():
@@ -198,6 +197,32 @@ class TestSecurityHeaders:
         server = rv.headers.get("Server", "")
         assert "Werkzeug" not in server or True  # Informational - document if leaking
 
+
+# ─── CSRF Protection Tests ────────────────────────────────────────────────────
+
+class TestCSRFProtection:
+    def _login(self, client):
+        client.post("/login", data={
+            "username": "admin",
+            "password": "Admin@Secure!2024"
+        })
+
+    def test_form_requires_csrf_token(self, client):
+        """Form submissions should be rejected without a CSRF token."""
+        self._login(client)
+
+        # Temporarily enable CSRF protection for this test
+        # (Since the main fixture disabled it globally)
+        client.application.config["WTF_CSRF_ENABLED"] = True
+
+        # Submit the form without a CSRF token
+        rv = client.post('/profile', data={'bio': 'test'})
+
+        # Restore the config so we don't break other tests
+        client.application.config["WTF_CSRF_ENABLED"] = False
+
+        # Assert that the lack of token triggered a Bad Request or Forbidden response
+        assert rv.status_code in [400, 403], 'Form should require CSRF token'
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "--tb=short"])
