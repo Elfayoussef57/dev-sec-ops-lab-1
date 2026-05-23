@@ -77,7 +77,7 @@ jobs:
             -r code/session1/requirements.txt \
             --json \
             --output safety_report.json || true
-          
+
           # Fail if critical vulnerabilities found
           python -c "
           import json, sys
@@ -162,7 +162,7 @@ jobs:
   container-scan:
     name: 🐳 Container Security Scan
     runs-on: ubuntu-latest
-    if: hashFiles('Dockerfile') != ''
+    if: always()
     steps:
       - uses: actions/checkout@v4
 
