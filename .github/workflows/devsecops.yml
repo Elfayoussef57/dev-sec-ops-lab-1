@@ -9,6 +9,7 @@ on:
 env:
   PYTHON_VERSION: "3.11"
   FAIL_ON_HIGH_SEVERITY: "true"
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   # ─── Job 1: SAST (Static Application Security Testing) ──────────────────────
@@ -76,13 +77,13 @@ jobs:
           safety check \
             -r code/session1/requirements.txt \
             --json \
-            --output safety_report.json || true
+            --output part2/safety_report.json || true
 
           # Fail if critical vulnerabilities found
           python -c "
           import json, sys
           try:
-              data = json.load(open('safety_report.json'))
+              data = json.load(open('part2/safety_report.json'))
               critical = [v for v in data if 'critical' in str(v).lower()]
               if critical:
                   print(f'❌ {len(critical)} critical vulnerabilities found')
@@ -97,7 +98,7 @@ jobs:
         if: always()
         with:
           name: safety-report
-          path: safety_report.json
+          path: part2/safety_report.json
 
   # ─── Job 3: Security Unit Tests ──────────────────────────────────────────────
   security-tests:
@@ -119,7 +120,7 @@ jobs:
 
       - name: Run security tests
         run: |
-          cd code/session2
+          cd code/part2
           pytest test_security.py -v \
             --tb=short \
             --junitxml=security_test_results.xml
@@ -129,7 +130,7 @@ jobs:
         if: always()
         with:
           name: security-test-results
-          path: code/session2/security_test_results.xml
+          path: code/part2/security_test_results.xml
 
   # ─── Job 4: Secret Scanning ──────────────────────────────────────────────────
   secret-scan:
