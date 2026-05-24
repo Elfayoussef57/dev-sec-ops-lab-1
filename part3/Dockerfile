@@ -25,8 +25,8 @@ WORKDIR /app
 COPY --from=builder /root/.local /home/appuser/.local
 
 # Copy application code
-COPY --chown=appuser:appgroup app_secure.py .
-COPY --chown=appuser:appgroup templates/ ./templates/
+COPY --chown=appuser:appgroup part1/app_secure.py .
+COPY --chown=appuser:appgroup part1/templates/ ./templates/
 
 # Security: Remove package manager after use (reduce attack surface)
 RUN apt-get update && \
